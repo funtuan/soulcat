@@ -1,0 +1,9 @@
+version: '3.1'
+services:
+  soulcat:
+    restart: always
+    build: .
+    env_file:
+      .env
+    ports:
+    - "8090:3000"

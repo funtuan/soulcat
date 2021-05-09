@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: soulcat
+spec:
+  selector:
+    matchLabels:
+      app: soulcat
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: soulcat
+    spec:
+      containers:
+      - name: soulcat
+        image: funtuan/soulcat
+        ports: 
+        - containerPort: 3000
+        env:
+        - name: REDIS_HOST
+          value: ""
+        - name: REDIS_PORT
+          value: ""
+        - name: CHANNEL_ID
+          value: ""
+        - name: CHANNEL_SECRET
+          value: ""
+        - name: CHANNEL_ACCESS_TOKEN
+          value: ""
+
+
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+      role: master
+      tier: backend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+        role: master
+        tier: backend
+    spec:
+      containers:
+      - name: master
+        image: k8s.gcr.io/redis:e2e  # or just image: redis
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 6379
